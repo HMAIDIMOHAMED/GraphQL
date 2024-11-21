@@ -6,24 +6,20 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Compte {
+public class Transaction {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private double solde;
+    private double montant;
+    private Date date;
+    private TypeTransaction type;
 
-    @Temporal(TemporalType.DATE)
-    private Date dateCreation;
-
-    @Enumerated(EnumType.STRING)
-    private TypeCompte type;
-
-    @OneToMany(mappedBy = "compte")
-    private List<Transaction> transactions;
+    @ManyToOne(cascade = CascadeType.REMOVE)
+    private Compte compte;
 }

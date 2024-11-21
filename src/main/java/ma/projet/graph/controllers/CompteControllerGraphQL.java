@@ -2,7 +2,10 @@ package ma.projet.graph.controllers;
 
 import lombok.AllArgsConstructor;
 import ma.projet.graph.entities.Compte;
+import ma.projet.graph.entities.TypeCompte;
 import ma.projet.graph.repositories.CompteRepository;
+import ma.projet.graph.repositories.TransactionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -15,8 +18,11 @@ import java.util.Map;
 @AllArgsConstructor
 public class CompteControllerGraphQL {
 
+    @Autowired
     private CompteRepository compteRepository;
 
+    @Autowired
+    private TransactionRepository transactionRepository;
     @QueryMapping
     public List<Compte> allComptes(){
         return compteRepository.findAll();
@@ -36,9 +42,9 @@ public class CompteControllerGraphQL {
 
     @QueryMapping
     public Map<String, Object> totalSolde() {
-        long count = compteRepository.count(); // Nombre total de comptes
-        double sum = compteRepository.sumSoldes(); // Somme totale des soldes
-        double average = count > 0 ? sum / count : 0; // Moyenne des soldes
+        long count = compteRepository.count();
+        double sum = compteRepository.sumSoldes();
+        double average = count > 0 ? sum / count : 0;
 
         return Map.of(
                 "count", count,
@@ -46,4 +52,10 @@ public class CompteControllerGraphQL {
                 "average", average
         );
     }
+    @QueryMapping
+    public List<Compte> findByType(@Argument TypeCompte type) {
+        return compteRepository.findByType(type);
+}
+
+
 }

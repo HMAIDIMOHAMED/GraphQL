@@ -1,8 +1,11 @@
 package ma.projet.graph;
 
 import ma.projet.graph.entities.Compte;
+import ma.projet.graph.entities.Transaction;
 import ma.projet.graph.entities.TypeCompte;
+import ma.projet.graph.entities.TypeTransaction;
 import ma.projet.graph.repositories.CompteRepository;
+import ma.projet.graph.repositories.TransactionRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -19,12 +22,16 @@ public class GraphApplication {
 
 
 	@Bean
-	CommandLineRunner start(CompteRepository compteRepository){
+	CommandLineRunner start(CompteRepository compteRepository, TransactionRepository transactionRepository) {
 		return args -> {
-			// Initialisation des comptes
-			compteRepository.save(new Compte(null, Math.random()*9000, new Date(), TypeCompte.EPARGNE));
-			compteRepository.save(new Compte(null, Math.random()*9000, new Date(), TypeCompte.COURANT));
-			compteRepository.save(new Compte(null, Math.random()*9000, new Date(), TypeCompte.EPARGNE));
+			Compte compte1 = compteRepository.save(new Compte(null, Math.random() * 9000, new Date(), TypeCompte.EPARGNE, null));
+			Compte compte2 = compteRepository.save(new Compte(null, Math.random() * 9000, new Date(), TypeCompte.COURANT, null));
+			Compte compte3 = compteRepository.save(new Compte(null, Math.random() * 9000, new Date(), TypeCompte.EPARGNE, null));
+
+			transactionRepository.save(new Transaction(null, 2000, null, TypeTransaction.Retrait, compte1));
+			transactionRepository.save(new Transaction(null, 1000, null, TypeTransaction.Depot, compte2));
+			transactionRepository.save(new Transaction(null, 500, null, TypeTransaction.Retrait, compte3));
 		};
 	}
+
 }
