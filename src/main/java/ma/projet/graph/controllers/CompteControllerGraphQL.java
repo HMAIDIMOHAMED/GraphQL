@@ -11,6 +11,10 @@ import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +41,15 @@ public class CompteControllerGraphQL {
 
     @MutationMapping
     public Compte saveCompte(@Argument Compte compte){
-       return compteRepository.save(compte);
+        Instant dateCreation = Instant.parse(compte.getDateCreation().toString());
+        compte.setDateCreation(dateCreation);
+        return compteRepository.save(compte);
+    }
+
+    private LocalDateTime convertToLocalDateTime(Date date) {
+        return date.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
     }
 
     @QueryMapping
